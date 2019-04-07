@@ -1,4 +1,4 @@
-package com.brasajava.gateway.service.impl;
+package com.brasajava.authentication.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,8 +17,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class CustomUserService implements ReactiveUserDetailsService {
 
-  private final PasswordEncoder encoder =
-      PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  private PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
   private UserDetails user(String u, String... roles) {
     return User.builder()
@@ -39,6 +38,6 @@ public class CustomUserService implements ReactiveUserDetailsService {
   public Mono<UserDetails> findByUsername(String username) {
     Optional<UserDetails> maybeUser =
         users.stream().filter(u -> u.getUsername().equalsIgnoreCase(username)).findFirst();
-    return maybeUser.map(Mono::just).orElse(Mono.error(new Exception()));
+    return maybeUser.map(Mono::just).orElse(Mono.empty());
   }
 }
