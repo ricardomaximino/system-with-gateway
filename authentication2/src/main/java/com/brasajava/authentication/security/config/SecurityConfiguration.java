@@ -18,6 +18,7 @@ public class SecurityConfiguration {
 
   private AuthenticationManager authenticationManager;
   private SecurityContextRepository securityContextRepository;
+  private static final String[] AUTH_WHITELIST = {"/login"};
 
   public SecurityConfiguration(
       AuthenticationManager authenticationManager,
@@ -33,16 +34,14 @@ public class SecurityConfiguration {
             (swe, e) ->
                 Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED)))
         .accessDeniedHandler(
-            (swe, e) -> {
-              return Mono.fromRunnable(
-                  () -> {
-                    swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-                  });
-            })
+            (swe, e) ->
+                Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN)))
         .and()
         .csrf()
         .disable()
         .formLogin()
+        .disable()
+        .logout()
         .disable()
         .httpBasic()
         .disable()
@@ -51,7 +50,7 @@ public class SecurityConfiguration {
         .authorizeExchange()
         .pathMatchers(HttpMethod.OPTIONS)
         .permitAll()
-        .pathMatchers("/login")
+        .pathMatchers(AUTH_WHITELIST)
         .permitAll()
         .anyExchange()
         .authenticated()

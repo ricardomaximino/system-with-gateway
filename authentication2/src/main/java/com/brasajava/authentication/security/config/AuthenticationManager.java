@@ -1,8 +1,6 @@
 package com.brasajava.authentication.security.config;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -11,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.brasajava.authentication.enums.Role;
 import com.brasajava.authentication.utils.JwtTokenUtil;
 
 import io.jsonwebtoken.Claims;
@@ -37,21 +34,15 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
     } catch (Exception e) {
       username = null;
     }
+
     if (jwtUtil.validateToken(authToken, username)) {
       Claims claims = jwtUtil.getAllClaimsFromToken(authToken);
-      Map<String, String> rolesMap = claims.get("role", Map.class);
-      List<Role> roles = new ArrayList<>();
-      for (String rolemap : rolesMap.values()) {
-        roles.add(Role.valueOf(rolemap));
-      }
+      List<String> roles = claims.get("roles", List.class);
       UsernamePasswordAuthenticationToken auth =
           new UsernamePasswordAuthenticationToken(
               username,
               null,
-              roles
-                  .stream()
-                  .map(authority -> new SimpleGrantedAuthority(authority.name()))
-                  .collect(Collectors.toList()));
+              roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
       return Mono.just(auth);
     } else {
       return Mono.empty();

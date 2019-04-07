@@ -28,7 +28,6 @@ public class AuthenticationController {
     this.jwtUtil = jwtUtil;
     this.userService = userRepository;
     this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    ;
   }
 
   @PostMapping("/login")

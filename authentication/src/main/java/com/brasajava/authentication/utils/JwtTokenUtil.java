@@ -1,8 +1,10 @@
 package com.brasajava.authentication.utils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -69,6 +71,9 @@ public class JwtTokenUtil implements Serializable {
     Map<String, Object> claims = new HashMap<>();
     claims.put("company", "brasajava");
     claims.put("year", "2014");
+    List<String> roles = new ArrayList<>();
+    userDetails.getAuthorities().stream().forEach(a -> roles.add(a.getAuthority()));
+    claims.put("roles", roles);
     return doGenerateToken(claims, userDetails.getUsername());
   }
 

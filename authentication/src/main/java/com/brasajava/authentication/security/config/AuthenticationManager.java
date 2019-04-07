@@ -2,7 +2,6 @@ package com.brasajava.authentication.security.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -39,9 +38,9 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
     }
     if (jwtUtil.validateToken(authToken, username)) {
       Claims claims = jwtUtil.getAllClaimsFromToken(authToken);
-      Map<String, String> rolesMap = claims.get("role", Map.class);
+      List<String> rolesList = claims.get("roles", List.class);
       List<Role> roles = new ArrayList<>();
-      for (String rolemap : rolesMap.values()) {
+      for (String rolemap : rolesList) {
         roles.add(Role.valueOf(rolemap));
       }
       UsernamePasswordAuthenticationToken auth =

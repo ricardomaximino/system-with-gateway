@@ -17,12 +17,13 @@ import reactor.core.publisher.Mono;
 @Service
 public class CustomUserService implements ReactiveUserDetailsService {
 
-  private PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  private PasswordEncoder passwordEncoder =
+      PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
   private UserDetails user(String u, String... roles) {
     return User.builder()
         .username(u)
-        .password(encoder.encode("password"))
+        .password(passwordEncoder.encode("password"))
         .authorities(roles)
         .build();
   }
