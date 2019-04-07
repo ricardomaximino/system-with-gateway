@@ -7,21 +7,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.csrf.ServerCsrfTokenRepository;
-import org.springframework.security.web.server.csrf.WebSessionServerCsrfTokenRepository;
 
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 @Configuration
 public class SecurityConfiguration {
-
-  @Bean
-  public ServerCsrfTokenRepository csrfTokenRepository() {
-    WebSessionServerCsrfTokenRepository repository = new WebSessionServerCsrfTokenRepository();
-    repository.setHeaderName("X-CSRF-TK");
-
-    return repository;
-  }
 
   @Bean
   public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -58,8 +48,7 @@ public class SecurityConfiguration {
                     .map(AuthorizationDecision::new))
         .and()
         .csrf()
-        .csrfTokenRepository(csrfTokenRepository())
-        .and()
+        .disable()
         .httpBasic()
         .and()
         .build();
