@@ -1,4 +1,4 @@
-package com.brasajava.gateway.service.impl;
+package com.brasajava.authentication.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
